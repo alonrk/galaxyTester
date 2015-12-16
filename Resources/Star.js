@@ -6,7 +6,6 @@ var Star = function(_item, _viewParams, _galaxy)
 	var _self = this;
 	var _size = _item.ui.width * _viewParams.scale;
 	var _connections = [];
-	var _connectionsContainer = null;
 	var _focus = false;
 	var _connectionsPacked = false;
 	var _active = true;
@@ -53,7 +52,6 @@ var Star = function(_item, _viewParams, _galaxy)
 	//	if (_childrenContainer)
 	//		_galaxy.removeEventListener('Galaxy.move', onGalaxyMove);
 
-		_connectionsContainer = null;
 		for (var i=0; i<_connections.length; i++)
 		{
 			var connection = _connections[i];
@@ -76,22 +74,6 @@ var Star = function(_item, _viewParams, _galaxy)
 	//-------------------------------------
 	this.addConnections = function(connections)
 	{
-		var containerWidth = _item.ui.width*2;
-		var containerHeight = _item.ui.height*2;	
-			
-		_connectionsContainer = Ti.UI.createView({
-			width: 1000,//containerWidth,
-			height: 1000,//containerHeight,
-			left: _self.x - containerWidth*0.5 + _viewParams.center.x,
-			top: _self.y - containerHeight*0.5 + _viewParams.center.y,
-			//transform: Ti.UI.create2DMatrix().scale(_viewParams.scale, _viewParams.scale),
-			//opacity: 0,
-			touchEnabled: false
-		});
-		
-		//if (_galaxy.ui)
-		//	_galaxy.ui.add(_connectionsContainer);
-
 		var numConnections = connections.length;
 		var sortedConnections = US.sortBy(connections, function(connection) {
 			return connection.scaleFactor;
@@ -102,10 +84,11 @@ var Star = function(_item, _viewParams, _galaxy)
 			var connection = sortedConnections[i];
 			
 			var viewParams = {
-				scale: Math.max(connection.scaleFactor, 0.1),
+				scale: _viewParams.scale * Math.max(connection.scaleFactor, 0.1),
 				x: Math.random()*2 - 1,
 				y: Math.random()*2 - 1,
-				center: {x: _self.x + _viewParams.center.x, y: _self.y + _viewParams.center.y}//{x: containerWidth*0.5, y: containerHeight*0.5}
+				center: {x: _self.x + _viewParams.center.x, y: _self.y + _viewParams.center.y},
+				level: _self.viewParams.level + 1
 			};
 			
 			var connectionStar = new Star(connection, viewParams, _galaxy);
@@ -124,8 +107,6 @@ var Star = function(_item, _viewParams, _galaxy)
 		if (numConnections == 0)
 			return;
 
-		//_connectionsContainer.touchEnabled = _focus;
-		
 		if (_focus && !_connectionsPacked)
 		{
 			packConnections();
@@ -139,10 +120,12 @@ var Star = function(_item, _viewParams, _galaxy)
 	//--------------------------------------------
 	function packConnections()
 	{
-		for (var iter=0; iter<5; iter++)
-		{
-			Utils.circlesPacking(_connections, 10);
-		}
+	//	for (var iter=0; iter<5; iter++)
+	//	{
+	//		Utils.circlesPacking(_connections, 10);
+	//	}
+	
+		Utils.spreadAround(_connections, _self.radius*1.5);
 		_connectionsPacked = true;
 	}
 
@@ -215,9 +198,14 @@ var Star = function(_item, _viewParams, _galaxy)
 	//-------------------------------------
 	function onClick(e)
 	{
+		_galaxy.zoom(_self.viewParams.level);
+		
 		//_galaxy.fireEvent('Galaxy.starClicked', {item: _item});
 		if (_item.onClick)
 			_item.onClick(_self);
+			
+		// only one time	
+		_item.onClick = null;
 	}
 };
 

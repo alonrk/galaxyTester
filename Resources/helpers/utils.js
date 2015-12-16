@@ -352,3 +352,15 @@ exports.circlesPacking = function(circles, delta)
 	c.y -= v.e(1);
   }*/
 };
+
+exports.spreadAround = function(circles, radius) 
+{
+	var angle = 2*Math.PI / circles.length;
+	
+	for (var i=0; i < circles.length; i++)
+	{
+		var ci = circles[i];
+		ci.x = (radius + ci.radius)*Math.cos(angle*i); 
+		ci.y = (radius + ci.radius)*Math.sin(angle*i);
+	}		
+};

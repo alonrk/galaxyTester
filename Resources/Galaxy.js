@@ -115,9 +115,17 @@ var Galaxy = function(_data, _width, _height)
 	};
 
 	//------------------------------------------------
+	this.zoom = function(val)
+	{
+		_self.ui.setZoomScale(val, {animated: true});
+		onMove();
+	};
+
+	//------------------------------------------------
 	this.zoomIn = function(val)
 	{
-		_self.ui.zoomScale += val || 0.4;
+		_self.ui.setZoomScale(_self.ui.zoomScale + (val || 0.4), {animated: true});
+		//_self.ui.zoomScale += val || 0.4;
 		onMove();
 	};
 
@@ -158,7 +166,8 @@ var Galaxy = function(_data, _width, _height)
 				scale: Math.max(item.scaleFactor, 0.3),
 				x: Math.random()*2 - 1,
 				y: Math.random()*2 - 1,
-				center: {x: _width, y: _height}
+				center: {x: _width, y: _height},
+				level: 1
 			};
 
 			var star = new Star(item, params, _self);

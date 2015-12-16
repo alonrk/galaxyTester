@@ -32,8 +32,8 @@ var label1 = Titanium.UI.createLabel({
 
 function createItemUI(item) {
 	var ui = Ti.UI.createView({
-		width: 150,
-		height: 150,
+		width: 100,
+		height: 100,
 		opacity: 0.5
 	});
 	
@@ -43,7 +43,7 @@ function createItemUI(item) {
 	});
 	
 	var label = Ti.UI.createLabel({
-		top: 80,
+		top: 60,
 		text: item.title,
 		color: 'white'
 	});
@@ -60,7 +60,7 @@ function onPersonClick(star) {
 		var item = {
 			title: 'golem',
 			type: 'person',
-			scaleFactor: Math.random()*1
+			scaleFactor: Math.random()*0.5 + 0.5
 		};
 		
 		item.ui = createItemUI(item);
