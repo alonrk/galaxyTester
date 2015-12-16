@@ -28,14 +28,13 @@ var label1 = Titanium.UI.createLabel({
 	width:'auto'
 });
 
-//win1.add(label1);
-
-// ------- galaxy ------------
+// ------------------------ galaxy -----------------------------
 
 function createItemUI(item) {
 	var ui = Ti.UI.createView({
 		width: 150,
-		height: 150
+		height: 150,
+		opacity: 0.5
 	});
 	
 	var bg = Ti.UI.createMaskedImage({
@@ -58,6 +57,16 @@ function createItemUI(item) {
 function generateGalaxyData() {
 	var data = new Array();
 	
+	var person = {
+		title: 'vova',
+		type: 'person',
+		scaleFactor: 1,
+		children: []
+	};
+	
+	person.ui = createItemUI(person);
+	data.push(person);
+	
 	for (var i=0; i<5; i++) {
 		var item = {
 			title: 'golem',
@@ -67,7 +76,7 @@ function generateGalaxyData() {
 		
 		item.ui = createItemUI(item);
 		
-		data.push(item);
+		person.children.push(item);
 	}	
 	
 	return data;
@@ -75,10 +84,12 @@ function generateGalaxyData() {
 
 var data = generateGalaxyData();
 
-var galaxy = new GalaxyLayer(data, 320, 500);
+var galaxy = new GalaxyLayer(data, 1000, 1000);
+galaxy.onFocus();
+
 win1.add(galaxy.ui);
 
-// ------- galaxy ------------
+// ------------------------ galaxy -----------------------------
 
 
 //
