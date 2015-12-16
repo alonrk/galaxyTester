@@ -115,9 +115,16 @@ var Galaxy = function(_data, _width, _height)
 	};
 
 	//------------------------------------------------
-	this.zoom = function(val)
+	this.focus = function(level, x, y)
 	{
-		_self.ui.setZoomScale(val, {animated: true});
+		console.log("level: " + level + ",x: " + _self.ui.contentOffset.x + ",y: " + _self.ui.contentOffset.y);
+		_self.ui.setContentOffset({x: (x - _width*0.5), y: (y - _height*0.5)});
+		
+		_self.ui.animate({
+			transform: Ti.UI.create2DMatrix().scale(level, level),
+			duration: 500
+		});
+
 		onMove();
 	};
 

@@ -4,7 +4,8 @@ var Utils = require('helpers/utils');
 var Star = function(_item, _viewParams, _galaxy)
 {
 	var _self = this;
-	var _size = _item.ui.width * _viewParams.scale;
+	_self.viewParams = _viewParams;
+	var _size = _item.ui.width * _self.viewParams.scale;
 	var _connections = [];
 	var _focus = false;
 	var _connectionsPacked = false;
@@ -13,16 +14,15 @@ var Star = function(_item, _viewParams, _galaxy)
 	var _dimmVal = false;
 	
 	_self.radius = _size * 0.5;
-	_self.x = _viewParams.x;
-	_self.y = _viewParams.y;
-	_self.viewParams = _viewParams;
+	_self.x = _self.viewParams.x;
+	_self.y = _self.viewParams.y;
 
 	_self.ui = Ti.UI.createView({
 		width: _item.ui.width,
 		height: _item.ui.height,
-		transform: Ti.UI.create2DMatrix().scale(_viewParams.scale, _viewParams.scale),
-		left: _self.x - _item.ui.width*0.5 + _viewParams.center.x,
-		top: _self.y - _item.ui.height*0.5 + _viewParams.center.y
+		transform: Ti.UI.create2DMatrix().scale(_self.viewParams.scale, _self.viewParams.scale),
+		left: _self.x - _item.ui.width*0.5 + _self.viewParams.center.x,
+		top: _self.y - _item.ui.height*0.5 + _self.viewParams.center.y
 	});
 	_self.ui.add(_item.ui);
 	_item.ui.addEventListener('singletap', onClick);
@@ -30,12 +30,12 @@ var Star = function(_item, _viewParams, _galaxy)
 	//-------------------------------------
 	this.layout = function(on)
 	{
-		var x = on ? _self.x : _viewParams.x;
-		var y = on ? _self.y : _viewParams.y; 
+		var x = on ? _self.x : _self.viewParams.x;
+		var y = on ? _self.y : _self.viewParams.y; 
 		
 		_self.ui.animate({
-			left: x - _item.ui.width*0.5 + _viewParams.center.x,
-			top: y - _item.ui.height*0.5 + _viewParams.center.y,
+			left: x - _item.ui.width*0.5 + _self.viewParams.center.x,
+			top: y - _item.ui.height*0.5 + _self.viewParams.center.y,
 			duration: 1500
 		}, function() {
 			//createChildren();
@@ -84,10 +84,10 @@ var Star = function(_item, _viewParams, _galaxy)
 			var connection = sortedConnections[i];
 			
 			var viewParams = {
-				scale: _viewParams.scale * Math.max(connection.scaleFactor, 0.1),
+				scale: _self.viewParams.scale * Math.max(connection.scaleFactor, 0.1),
 				x: Math.random()*2 - 1,
 				y: Math.random()*2 - 1,
-				center: {x: _self.x + _viewParams.center.x, y: _self.y + _viewParams.center.y},
+				center: {x: _self.x + _self.viewParams.center.x, y: _self.y + _self.viewParams.center.y},
 				level: _self.viewParams.level + 1
 			};
 			
@@ -180,10 +180,10 @@ var Star = function(_item, _viewParams, _galaxy)
 	function onGalaxyMove(e)
 	{
 		var focus = false;
-		var dx = e.x / e.zoomScale - (_self.x + _viewParams.center.x);
-		var dy = e.y / e.zoomScale - (_self.y + _viewParams.center.y);
+		var dx = e.x / e.zoomScale - (_self.x + _self.viewParams.center.x);
+		var dy = e.y / e.zoomScale - (_self.y + _self.viewParams.center.y);
 		var d = (dx*dx) + (dy*dy);
-		if (d < SQR_DELTA && e.zoomScale*_viewParams.scale > 1.3)
+		if (d < SQR_DELTA && e.zoomScale*_self.viewParams.scale > 1.3)
 		{
 			focus = true;
 		}
@@ -198,7 +198,7 @@ var Star = function(_item, _viewParams, _galaxy)
 	//-------------------------------------
 	function onClick(e)
 	{
-		_galaxy.zoom(_self.viewParams.level);
+		_galaxy.focus(_self.viewParams.level, _self.x + _self.viewParams.center.x, _self.y + _self.viewParams.center.y);
 		
 		//_galaxy.fireEvent('Galaxy.starClicked', {item: _item});
 		if (_item.onClick)
