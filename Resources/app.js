@@ -64,6 +64,7 @@ function onPersonClick(star) {
 		};
 		
 		item.ui = createItemUI(item);
+		item.onClick = onPersonClick;
 		
 		connections.push(item);
 	}
@@ -72,7 +73,7 @@ function onPersonClick(star) {
 }
 
 function generateGalaxyData() {
-	var data = new Array();
+	var data = [];
 	
 	var person = {
 		title: 'vova',

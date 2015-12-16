@@ -27,7 +27,7 @@ var Sylvester = {
 
 var _ = {};
 
-_.Vector = Vector = function() {}
+_.Vector = Vector = function() {};
 Vector.prototype = {
 
   // Returns element i of the vector

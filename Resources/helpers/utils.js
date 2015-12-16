@@ -310,7 +310,7 @@ exports.getUrlIndexes = function(text)
 };
 
 // -------------------------------------------
-exports.circlesPacking = function(circles, delta, width, height) 
+exports.circlesPacking = function(circles, delta) 
 {
 	var Syl = require('helpers/sylvester');
 
@@ -320,27 +320,26 @@ exports.circlesPacking = function(circles, delta, width, height)
 
 	for (var i=0; i<circles.length; i++) 
 	{
-	  ci = circles[i];
-	  for (var j=i+1; j<circles.length; j++) {
-	      cj = circles[j];
-	      var dx = cj.x - ci.x;
-	      var dy = cj.y - ci.y;
-	      var r = ci.radius + cj.radius + delta;
-	      var d = (dx*dx) + (dy*dy);
-	      if (d < (r * r) - 0.01 ) {
-	
-	        v.setElements([dx,dy,0]);
-	
-	        v = v.toUnitVector();
-	        v = v.multiply((r-Math.sqrt(d))*0.5);
-	
-	          cj.x += v.e(0);
-	          cj.y += v.e(1);
-	
-	          ci.x -= v.e(0);
-	          ci.y -= v.e(1);       
-	      }
-	  }
+		ci = circles[i];
+		for (var j=i+1; j<circles.length; j++) {
+			cj = circles[j];
+			var dx = cj.x - ci.x;
+			var dy = cj.y - ci.y;
+			var r = ci.radius + cj.radius + delta;
+			var d = (dx*dx) + (dy*dy);
+			if (d < (r * r) - 0.01 ) {
+				v.setElements([dx,dy,0]);
+		
+		        v = v.toUnitVector();
+		        v = v.multiply((r-Math.sqrt(d))*0.5);
+		
+				cj.x += v.e(0);
+	        	cj.y += v.e(1);
+		
+		        ci.x -= v.e(0);
+		        ci.y -= v.e(1);       
+	    	}
+		}
 	}
 
   //Contract
