@@ -1,4 +1,4 @@
-var GalaxyLayer = require('GalaxyLayer');
+var Galaxy = require('Galaxy');
 
 // this sets the background color of the master UIView (when there are no windows/tab groups on it)
 Titanium.UI.setBackgroundColor('#000');
@@ -54,19 +54,8 @@ function createItemUI(item) {
 	return ui;
 }
 
-function generateGalaxyData() {
-	var data = new Array();
-	
-	var person = {
-		title: 'vova',
-		type: 'person',
-		scaleFactor: 1,
-		children: []
-	};
-	
-	person.ui = createItemUI(person);
-	data.push(person);
-	
+function onPersonClick(star) {
+	var connections = [];
 	for (var i=0; i<5; i++) {
 		var item = {
 			title: 'golem',
@@ -76,18 +65,36 @@ function generateGalaxyData() {
 		
 		item.ui = createItemUI(item);
 		
-		person.children.push(item);
-	}	
+		connections.push(item);
+	}
+	
+	star.addConnections(connections);
+}
+
+function generateGalaxyData() {
+	var data = new Array();
+	
+	var person = {
+		title: 'vova',
+		type: 'person',
+		scaleFactor: 1
+	};
+	
+	person.ui = createItemUI(person);
+	person.onClick = onPersonClick;
+	data.push(person);
 	
 	return data;
 }
 
 var data = generateGalaxyData();
 
-var galaxy = new GalaxyLayer(data, 1000, 1000);
+var galaxy = new Galaxy(data, 1000, 1000);
 galaxy.onFocus();
 
 win1.add(galaxy.ui);
+
+
 
 // ------------------------ galaxy -----------------------------
 

@@ -1,14 +1,14 @@
 var US = require('helpers/underscore')._;
 var Utils = require('helpers/utils');
 
-var Star = function(_item, _viewParams, _galaxyLayer)
+var Star = function(_item, _viewParams, _galaxy)
 {
 	var _self = this;
 	var _size = _item.ui.width * _viewParams.scale;
-	var _children = [];
-	var _childrenContainer = null;
+	var _connections = [];
+	var _connectionsContainer = null;
 	var _focus = false;
-	var _childrenPacked = false;
+	var _connectionsPacked = false;
 	var _active = true;
 	var _dimmFunction = null;
 	var _dimmVal = false;
@@ -51,15 +51,15 @@ var Star = function(_item, _viewParams, _galaxyLayer)
 		_item.ui.removeEventListener('singletap', onClick);
 		_item.ui.opacity = 1;
 	//	if (_childrenContainer)
-	//		_galaxyLayer.removeEventListener('GalaxyLayer.move', onGalaxyMove);
+	//		_galaxy.removeEventListener('Galaxy.move', onGalaxyMove);
 
-		_childrenContainer = null;
-		for (var i=0; i<_children.length; i++)
+		_connectionsContainer = null;
+		for (var i=0; i<_connections.length; i++)
 		{
-			var child = _children[i];
-			child.onClose();
+			var connection = _connections[i];
+			connection.onClose();
 		}
-		_children = null;
+		_connections = null;
 		_self.ui = null;
 		_self = null;
 	};
@@ -74,15 +74,12 @@ var Star = function(_item, _viewParams, _galaxyLayer)
 	};
 	
 	//-------------------------------------
-	function createChildren()
+	this.addConnections = function(connections)
 	{
-		if (!_active || !_item.children)
-			return;
-			
 		var containerWidth = _item.ui.width*2;
 		var containerHeight = _item.ui.height*2;	
 			
-		_childrenContainer = Ti.UI.createView({
+		_connectionsContainer = Ti.UI.createView({
 			width: Ti.UI.FILL,//containerWidth,
 			height: Ti.UI.FILL,//containerHeight,
 			left: _self.x - containerWidth*0.5 + _viewParams.center.x,
@@ -92,64 +89,65 @@ var Star = function(_item, _viewParams, _galaxyLayer)
 			touchEnabled: false
 		});
 		
-		if (_galaxyLayer.ui)
-			_galaxyLayer.ui.add(_childrenContainer);
+		if (_galaxy.ui)
+			_galaxy.ui.add(_connectionsContainer);
 
-		var numChildren = _item.children.length;
-		var sortedChildren = US.sortBy(_item.children, function(child) {
-			return child.scaleFactor;
+		var numConnections = connections.length;
+		var sortedConnections = US.sortBy(connections, function(connection) {
+			return connection.scaleFactor;
 		});
 		
-		for (var i=0; i<numChildren; i++)
+		for (var i=0; i<numConnections; i++)
 		{
-			var child = sortedChildren[i];
+			var connection = sortedConnections[i];
 			
 			var viewParams = {
-				scale: Math.max(child.scaleFactor, 0.1),
+				scale: Math.max(connection.scaleFactor, 0.1),
 				x: Math.random()*2 - 1,
 				y: Math.random()*2 - 1,
 				center: {x: containerWidth*0.5, y: containerHeight*0.5}
 			};
 			
-			var childStar = new Star(child, viewParams, _galaxyLayer);
-			_childrenContainer.add(childStar.ui);
-			_children.push(childStar);
+			var connectionStar = new Star(connection, viewParams, _galaxy);
+			_connectionsContainer.add(connectionStar.ui);
+			_connections.push(connectionStar);
 		}
-		
-	//	_galaxyLayer.addEventListener('GalaxyLayer.move', onGalaxyMove);
-	}
+
+		_focus = true;
+		focusConnections();
+	};
 
 	//---------------------------------------------------------
-	function focusChildren()
+	function focusConnections()
 	{
-		var numChildren = _children.length;
-		if (numChildren == 0)
+		var numConnections = _connections.length;
+		if (numConnections == 0)
 			return;
 
-		_childrenContainer.touchEnabled = _focus;
+		_connectionsContainer.touchEnabled = _focus;
 		
-		if (_focus && !_childrenPacked)
+		if (_focus && !_connectionsPacked)
 		{
-			packChildren();
+			packConnections();
 		}
 		
 		dimmIt();
 
-		animateChildren();
+		animateConnections();
 	}
 
 	//--------------------------------------------
-	function packChildren()
+	function packConnections()
 	{
 		for (var iter=0; iter<5; iter++)
 		{
-			Utils.circlesPacking(_children, 2);
+			Utils.circlesPacking(_connections, 2);
 		}
-		_childrenPacked = true;
+		_connectionsPacked = true;
 	}
 
 	//--------------------------------------------
-	function animateChildren()
+	function animateConnections()
 	{
 		/*
 		_childrenContainer.animate({
@@ -163,10 +161,10 @@ var Star = function(_item, _viewParams, _galaxyLayer)
 		});
 		*/
 
-		for (var i=0; i<_children.length; i++)
+		for (var i=0; i<_connections.length; i++)
 		{
-			var child = _children[i];
-			child.layout(_focus);
+			var connection = _connections[i];
+			connection.layout(_focus);
 		}
 	}
 
@@ -178,10 +176,10 @@ var Star = function(_item, _viewParams, _galaxyLayer)
 		
 		if (_focus)
 		{
-			for (var i in _children)
+			for (var i in _connections)
 			{
-				var child = _children[i];
-				child.dimm(_dimmFunction, _dimmVal);
+				var connection = _connections[i];
+				connection.dimm(_dimmFunction, _dimmVal);
 			}
 			return;
 		}
@@ -211,15 +209,15 @@ var Star = function(_item, _viewParams, _galaxyLayer)
 			return;
 			
 		_focus = focus;
-		focusChildren();
+		focusConnections();
 	}
 
 	//-------------------------------------
 	function onClick(e)
 	{
-		//_galaxyLayer.fireEvent('GalaxyLayer.starClicked', {item: _item});
-		_focus = true;
-		focusChildren();
+		//_galaxy.fireEvent('Galaxy.starClicked', {item: _item});
+		if (_item.onClick)
+			_item.onClick(_self);
 	}
 };
 

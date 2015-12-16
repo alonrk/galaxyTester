@@ -4,7 +4,7 @@ var Star = require('Star');
 
 var SQR_DELTA = 50*50;
 
-var GalaxyLayer = function(_data, _width, _height)
+var Galaxy = function(_data, _width, _height)
 {
 	var _self = this;
 	var _eventProxy = Ti.createBuffer({value: "proxy"});
@@ -54,7 +54,7 @@ var GalaxyLayer = function(_data, _width, _height)
 			
 		//_self.ui.opacity = 1;
 		_self.ui.contentOffset = _lastOffset;
-		_eventProxy.fireEvent('GalaxyLayer.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5, force: true});
+		_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5, force: true});
 	};
 
 	//--------------------------------------
@@ -191,8 +191,8 @@ var GalaxyLayer = function(_data, _width, _height)
 	function onMove(e)
 	{
 		_lastOffset = _self.ui.contentOffset;
-		_eventProxy.fireEvent('GalaxyLayer.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5});
+		_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5});
 	}
 };
 
-module.exports = GalaxyLayer;
+module.exports = Galaxy;
