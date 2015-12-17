@@ -87,8 +87,7 @@ var Star = function(_item, _viewParams, _galaxy)
 				scale: _self.viewParams.scale * Math.max(connection.scaleFactor, 0.1),
 				x: Math.random()*2 - 1,
 				y: Math.random()*2 - 1,
-				center: {x: _self.x + _self.viewParams.center.x, y: _self.y + _self.viewParams.center.y},
-				level: _self.viewParams.level + 1
+				center: {x: _self.x + _self.viewParams.center.x, y: _self.y + _self.viewParams.center.y}
 			};
 			
 			var connectionStar = new Star(connection, viewParams, _galaxy);
@@ -198,7 +197,7 @@ var Star = function(_item, _viewParams, _galaxy)
 	//-------------------------------------
 	function onClick(e)
 	{
-		_galaxy.focus(_self.viewParams.level, _self.x + _self.viewParams.center.x, _self.y + _self.viewParams.center.y);
+		_galaxy.focus(_self.viewParams.scale, _self.x + _self.viewParams.center.x, _self.y + _self.viewParams.center.y);
 		
 		//_galaxy.fireEvent('Galaxy.starClicked', {item: _item});
 		if (_item.onClick)

@@ -54,7 +54,7 @@ function createItemUI(item) {
 	return ui;
 }
 
-function onPersonClick(star) {
+function onItemClick(star) {
 	var connections = [];
 	for (var i=0; i<5; i++) {
 		var item = {
@@ -64,7 +64,7 @@ function onPersonClick(star) {
 		};
 		
 		item.ui = createItemUI(item);
-		item.onClick = onPersonClick;
+		item.onClick = onItemClick;
 		
 		connections.push(item);
 	}
@@ -82,7 +82,7 @@ function generateGalaxyData() {
 	};
 	
 	person.ui = createItemUI(person);
-	person.onClick = onPersonClick;
+	person.onClick = onItemClick;
 	data.push(person);
 	
 	return data;
@@ -91,7 +91,6 @@ function generateGalaxyData() {
 var data = generateGalaxyData();
 
 var galaxy = new Galaxy(data, 1000, 1000);
-galaxy.onFocus();
 
 win1.add(galaxy.ui);
 

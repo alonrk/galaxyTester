@@ -18,13 +18,14 @@ var Galaxy = function(_data, _width, _height)
 		height: _height,
 		contentWidth: _width*2,
 		contentHeight: _height*2,
-		minZoomScale: 0.1,
-		maxZoomScale: 100,
-		zoomScale: 1,
-		opacity: 0
+		minZoomScale: 1,
+		maxZoomScale: 1,
+		zoomScale: 1
 	});
-	_self.ui.addEventListener('scrollend', onMove);
-	_self.ui.addEventListener('dragend', onMove);
+	//_self.ui.addEventListener('scrollend', onMove);
+	//_self.ui.addEventListener('dragend', onMove);
+	
+	_self.ui.contentOffset = _lastOffset;
 	
 	layout();
 	
@@ -53,8 +54,8 @@ var Galaxy = function(_data, _width, _height)
 			return;
 			
 		//_self.ui.opacity = 1;
-		_self.ui.contentOffset = _lastOffset;
-		_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5, force: true});
+		//_self.ui.contentOffset = _lastOffset;
+		//_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5, force: true});
 	};
 
 	//--------------------------------------
@@ -115,31 +116,17 @@ var Galaxy = function(_data, _width, _height)
 	};
 
 	//------------------------------------------------
-	this.focus = function(level, x, y)
+	this.focus = function(scale, x, y)
 	{
-		console.log("level: " + level + ",x: " + _self.ui.contentOffset.x + ",y: " + _self.ui.contentOffset.y);
 		_self.ui.setContentOffset({x: (x - _width*0.5), y: (y - _height*0.5)});
 		
+		var zoom = 1/scale;
+		
 		_self.ui.animate({
-			transform: Ti.UI.create2DMatrix().scale(level, level),
+			transform: Ti.UI.create2DMatrix().scale(zoom, zoom),
 			duration: 500
 		});
 
-		onMove();
-	};
-
-	//------------------------------------------------
-	this.zoomIn = function(val)
-	{
-		_self.ui.setZoomScale(_self.ui.zoomScale + (val || 0.4), {animated: true});
-		//_self.ui.zoomScale += val || 0.4;
-		onMove();
-	};
-
-	//------------------------------------------------
-	this.zoomOut = function(val)
-	{
-		_self.ui.zoomScale -= val || 0.4;
 		onMove();
 	};
 
@@ -173,8 +160,7 @@ var Galaxy = function(_data, _width, _height)
 				scale: Math.max(item.scaleFactor, 0.3),
 				x: Math.random()*2 - 1,
 				y: Math.random()*2 - 1,
-				center: {x: _width, y: _height},
-				level: 1
+				center: {x: _width, y: _height}
 			};
 
 			var star = new Star(item, params, _self);
@@ -206,8 +192,9 @@ var Galaxy = function(_data, _width, _height)
 	//-------------------------------------
 	function onMove(e)
 	{
-		_lastOffset = _self.ui.contentOffset;
-		_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5});
+		//_self.ui.transform = Ti.UI.create2DMatrix().scale(1,1);
+		//_lastOffset = _self.ui.contentOffset;
+		//_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5});
 	}
 };
 
