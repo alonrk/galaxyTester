@@ -22,8 +22,6 @@ var Galaxy = function(_data, _width, _height)
 		maxZoomScale: 1,
 		zoomScale: 1
 	});
-	//_self.ui.addEventListener('scrollend', onMove);
-	//_self.ui.addEventListener('dragend', onMove);
 	
 	_self.ui.contentOffset = _lastOffset;
 	
@@ -41,21 +39,8 @@ var Galaxy = function(_data, _width, _height)
 		}
 		_stars = null;
 		
-		_self.ui.removeEventListener('scrollend', onMove);
-		_self.ui.removeEventListener('dragend', onMove);
 		_self.ui = null;
 		_self = null;
-	};
-
-	//--------------------------------------
-	this.onFocus = function()
-	{
-		if (!_active)
-			return;
-			
-		//_self.ui.opacity = 1;
-		//_self.ui.contentOffset = _lastOffset;
-		//_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5, force: true});
 	};
 
 	//--------------------------------------
@@ -79,7 +64,7 @@ var Galaxy = function(_data, _width, _height)
 	//------------------------------------------------
 	this.resetLocation = function()
 	{
-		_self.ui.zoomScale = 1;
+		_self.ui.transform = Ti.UI.create2DMatrix().scale(1, 1);
 		_self.ui.setContentOffset({x: _width*0.5, y: _height*0.5});
 	};
 
@@ -169,13 +154,6 @@ var Galaxy = function(_data, _width, _height)
 			_stars.push(star);
 		}
 		
-		// calc positions
-		for (var iter=0; iter<4; iter++)
-		{
-			//var iterCounter = 1 + Math.floor(iter * 0.3);
-			Utils.circlesPacking(_stars, 30);
-		}
-
 		_self.ui.animate({
 			opacity: 1,
 			duration: 1000
@@ -187,14 +165,6 @@ var Galaxy = function(_data, _width, _height)
 			var star = _stars[i];
 			star.layout(true);
 		}
-	}
-	
-	//-------------------------------------
-	function onMove(e)
-	{
-		//_self.ui.transform = Ti.UI.create2DMatrix().scale(1,1);
-		//_lastOffset = _self.ui.contentOffset;
-		//_eventProxy.fireEvent('Galaxy.move', {zoomScale: _self.ui.zoomScale, x: _lastOffset.x + _width*0.5, y: _lastOffset.y + _height*0.5});
 	}
 };
 
